@@ -2,28 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Send Course Link</title>
+  <title>Get Course Access</title>
   <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script>
     (function() {
-      emailjs.init("BuM3KgQOxG4_bpvT0"); // ✅ Your PUBLIC KEY
+      emailjs.init("BuM3KgQOxG4_bpvT0"); // Your EmailJS public key
     })();
   </script>
 </head>
-<body style="font-family: Arial, sans-serif; padding: 40px; background: #f4f4f4;">
+<body>
 
-  <h2>📘 Get Your Course Access</h2>
-  <form id="courseForm" style="background: #fff; padding: 20px; border-radius: 10px; max-width: 400px;">
+  <h2>Get Your Course Access</h2>
+  <form id="courseForm">
     <label for="name">Your Name:</label><br>
     <input type="text" id="name" name="name" required><br><br>
 
     <label for="email">Your Email:</label><br>
     <input type="email" id="email" name="email" required><br><br>
 
-    <button type="submit">Send Course Link</button>
+    <button type="submit">Proceed to Payment</button>
   </form>
 
-  <p id="statusMsg" style="margin-top: 20px; font-weight: bold;"></p>
+  <p id="statusMsg"></p>
 
   <script>
     document.getElementById('courseForm').addEventListener('submit', function(e) {
@@ -32,16 +33,35 @@
       const name = document.getElementById("name").value;
       const email = document.getElementById("email").value;
 
-      emailjs.send("service_hpdn3bd", "template_l0u4a5a", {
-        name: name,
-        email: email,
-        course_link: "https://drive.google.com/your-course-folder" // 🟡 Replace with your actual link
-      }).then(function(response) {
-        document.getElementById("statusMsg").innerText = "📩 Course link sent to your email!";
-      }, function(error) {
-        document.getElementById("statusMsg").innerText = "❌ Failed to send email. Please try again.";
-        console.error(error);
-      });
+      const options = {
+        key: "YOUR_RAZORPAY_KEY", // Replace with your Razorpay Key ID
+        amount: 49900, // Amount in paisa: ₹499 = 49900
+        currency: "INR",
+        name: "Fresheat Academy",
+        description: "Course Access Payment",
+        handler: function (response) {
+          // Payment successful, send email
+          emailjs.send("service_hpdn3bd", "template_l0u4a5a", {
+            name: name,
+            email: email
+          }).then(function() {
+            document.getElementById("statusMsg").innerText = "✅ Payment done & Email sent!";
+          }, function(error) {
+            document.getElementById("statusMsg").innerText = "❌ Email failed. Please contact support.";
+            console.error(error);
+          });
+        },
+        prefill: {
+          name: name,
+          email: email
+        },
+        theme: {
+          color: "#3399cc"
+        }
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.open();
     });
   </script>
 
