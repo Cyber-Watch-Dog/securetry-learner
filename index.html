@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Contact Form</title>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    (function(){
+      emailjs.init("BuM3KgQOxG4_bpvT0"); // Your PUBLIC key
+    })();
+    
+    function sendEmail(e) {
+      e.preventDefault();
+      const now = new Date().toLocaleString();
+      document.getElementById('time').value = now;
+
+      emailjs.sendForm("service_hpdn3bd", "template_l0u4a5a", e.target)
+        .then(() => {
+          alert("✅ Message sent successfully!");
+          e.target.reset();
+        }, (error) => {
+          alert("❌ Failed to send message: " + error.text);
+        });
+    }
+  </script>
+</head>
+<body>
+  <h2>Contact Us</h2>
+  <form onsubmit="sendEmail(event)">
+    <label for="name">Name:</label><br>
+    <input type="text" name="name" required><br><br>
+
+    <label for="message">Message:</label><br>
+    <textarea name="message" required></textarea><br><br>
+
+    <!-- Hidden field to insert time dynamically -->
+    <input type="hidden" name="time" id="time">
+
+    <button type="submit">Send</button>
+  </form>
+</body>
+</html>
