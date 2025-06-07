@@ -10,32 +10,36 @@
     })();
   </script>
 </head>
-<body>
+<body style="font-family: Arial, sans-serif; padding: 40px; background: #f4f4f4;">
 
-  <h2>Get Your Course Access</h2>
-  <form id="courseForm">
+  <h2>📘 Get Your Course Access</h2>
+  <form id="courseForm" style="background: #fff; padding: 20px; border-radius: 10px; max-width: 400px;">
     <label for="name">Your Name:</label><br>
     <input type="text" id="name" name="name" required><br><br>
 
     <label for="email">Your Email:</label><br>
     <input type="email" id="email" name="email" required><br><br>
 
-    <button type="submit">Send Link</button>
+    <button type="submit">Send Course Link</button>
   </form>
 
-  <p id="statusMsg"></p>
+  <p id="statusMsg" style="margin-top: 20px; font-weight: bold;"></p>
 
   <script>
     document.getElementById('courseForm').addEventListener('submit', function(e) {
       e.preventDefault();
 
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+
       emailjs.send("service_hpdn3bd", "template_l0u4a5a", {
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value
+        name: name,
+        email: email,
+        course_link: "https://drive.google.com/your-course-folder" // 🟡 Replace with your actual link
       }).then(function(response) {
-        document.getElementById("statusMsg").innerText = "📩 Email sent successfully!";
+        document.getElementById("statusMsg").innerText = "📩 Course link sent to your email!";
       }, function(error) {
-        document.getElementById("statusMsg").innerText = "❌ Failed to send email.";
+        document.getElementById("statusMsg").innerText = "❌ Failed to send email. Please try again.";
         console.error(error);
       });
     });
